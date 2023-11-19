@@ -4,7 +4,7 @@
     Author     : ccslearner
 --%>
 
-<%@ page import="java.util.List, employeemg.employee, java.util.Date" %>
+<%@ page import="java.util.List, data_management.employee, java.util.Date" %>
 <%@ page import="java.io.*, java.sql.*, java.text.SimpleDateFormat" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
