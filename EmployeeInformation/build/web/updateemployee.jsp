@@ -10,17 +10,17 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.ParseException" %>
 
-                        <!DOCTYPE html>
-                        <html>
+<!DOCTYPE html>
+<html>
 
-                        <head>
-                            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                            <title>Update Employee Information</title>
-                        </head>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Update Employee Information</title>
+</head>
 
-                        <body>
-                            <form action="updateemployee.jsp" method="post">
-                                <jsp:useBean id="E" class="data_management.employee" scope="session" />
+<body>
+<form action="updateemployee.jsp" method="post">
+<jsp:useBean id="E" class="data_management.employee" scope="session" />
                                 <%
         String errorMessage = "";
         boolean res = false;
