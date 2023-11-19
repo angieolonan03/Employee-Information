@@ -100,50 +100,52 @@ public class employee {
     }
 
     public boolean updateEmployee() {
-        try {
-            // Connect to the database
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false");
-            System.out.println("Connection Successful!");
+try {
+    // Connect to the database
+    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false");
+    System.out.println("Connection Successful!");
 
-            // Check if employee exists
-            PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM employee WHERE employee_id = ?");
-            checkStmt.setInt(1, employeeId);
-            ResultSet checkResult = checkStmt.executeQuery();
+    // Check if employee exists
+    PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM employee WHERE employee_id = ?");
+    checkStmt.setInt(1, employeeId);
+    ResultSet checkResult = checkStmt.executeQuery();
 
-            if (!checkResult.next()) {
-                // Employee with the specified ID does not exist
-                return false;
-            }
-
-            // Update employee information
-            PreparedStatement updateStmt = conn.prepareStatement("UPDATE employee SET first_name = ?, last_name = ?, gender = ?, birthday = ?, age = ?, position = ?, mobile_no = ?, vendor_id = ? WHERE employee_id = ?");
-            updateStmt.setString(1, firstName);
-            updateStmt.setString(2, lastName);
-            updateStmt.setString(3, gender);
-            updateStmt.setInt(5, age);
-            updateStmt.setString(6, position);
-            updateStmt.setDouble(7, salary);
-            updateStmt.setInt(8, mobileNo);
-            updateStmt.setInt(9, vendorId);
-
-            // Convert java.util.Date to java.sql.Date
-            java.sql.Date sqlDate = new java.sql.Date(birthday.getTime());
-            updateStmt.setDate(4, sqlDate);
-
-            updateStmt.setInt(9, employeeId);
-
-            updateStmt.executeUpdate();
-
-            checkStmt.close();
-            updateStmt.close();
-            conn.close();
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    if (!checkResult.next()) {
+        // Employee with the specified ID does not exist
+        System.out.println("Employee with ID " + employeeId + " does not exist.");
         return false;
     }
+
+    // Update employee information
+    PreparedStatement updateStmt = conn.prepareStatement("UPDATE employee SET first_name = ?, last_name = ?, gender = ?, birthday = ?, age = ?, position = ?, salary = ?, mobile_no = ?, vendor_id = ? WHERE employee_id = ?");
+    updateStmt.setString(1, firstName);
+    updateStmt.setString(2, lastName);
+    updateStmt.setString(3, gender);
+    // Convert java.util.Date to java.sql.Date
+    java.sql.Date sqlDate = new java.sql.Date(birthday.getTime());
+    updateStmt.setDate(4, sqlDate);
+    updateStmt.setInt(5, age);
+    updateStmt.setString(6, position);
+    updateStmt.setDouble(7, salary);
+    updateStmt.setInt(8, mobileNo);
+    updateStmt.setInt(9, vendorId);
+    
+    updateStmt.setInt(10, employeeId);
+
+    int rowsAffected = updateStmt.executeUpdate();
+    System.out.println("Rows affected: " + rowsAffected);
+
+    checkStmt.close();
+    updateStmt.close();
+    conn.close();
+
+    return true;
+} catch (Exception e) {
+    e.printStackTrace();
+}
+return false;
+
+}
 
     public boolean deleteEmployee() {
         try (
