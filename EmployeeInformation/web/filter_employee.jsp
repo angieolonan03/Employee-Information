@@ -4,21 +4,19 @@
     Author     : ccslearner
 --%>
 
-    <%@ page import="java.util.List, data_management.employee, java.util.Date" %>
-        <%@ page import="java.io.*, java.sql.*, java.text.SimpleDateFormat" %>
-            <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-                <!DOCTYPE html>
-                <html>
+<%@ page import="java.util.List, employeemg.employee, java.util.Date" %>
+<%@ page import="java.io.*, java.sql.*, java.text.SimpleDateFormat" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search and Filter Employee Information</title>
+</head>
+<body>
+    <h1>Search and Filter Employee Information</h1>
 
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Search and Filter Employee Information</title>
-                </head>
-
-                <body>
-                    <h1>Search and Filter Employee Information</h1>
-
-                    <% 
+    <% 
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String gender = request.getParameter("gender");
@@ -26,29 +24,27 @@
         String ageString = request.getParameter("age");
         Integer age = null;
 
-if (ageString != null && !ageString.isEmpty()) {
-    try {
-        age = Integer.parseInt(ageString);
-    } catch (NumberFormatException e) {
-        // Handle the case where ageString is not a valid integer
-        e.printStackTrace();
-    }
-}
+        if (ageString != null && !ageString.isEmpty()) {
+            try {
+                age = Integer.parseInt(ageString);
+            } catch (NumberFormatException e) {
+                // Handle the case where ageString is not a valid integer
+                e.printStackTrace();
+            }
+        }
 
         String position = request.getParameter("position");
         String salaryString = request.getParameter("salary");
-Double salary = null;
+        Double salary = null;
 
-if (salaryString != null && !salaryString.isEmpty()) {
-    try {
-        salary = Double.parseDouble(salaryString);
-    } catch (NumberFormatException e) {
-        // Handle the case where salaryString is not a valid double
-        e.printStackTrace();
-    }
-}
-
-        
+        if (salaryString != null && !salaryString.isEmpty()) {
+            try {
+                salary = Double.parseDouble(salaryString);
+            } catch (NumberFormatException e) {
+                // Handle the case where salaryString is not a valid double
+                e.printStackTrace();
+            }
+        }
 
         // You need to parse the Date from the String
         Date birthday = null;
@@ -61,71 +57,63 @@ if (salaryString != null && !salaryString.isEmpty()) {
             }
         }
         
+        
+        String vendorIdString = request.getParameter("vendorId");
+        Integer vendorId = null;
+
+        if (vendorIdString != null && !vendorIdString.isEmpty()) {
+            try {
+                vendorId = Integer.parseInt(vendorIdString);
+            } catch (NumberFormatException e) {
+                // Handle the case where vendorIdString is not a valid integer
+                e.printStackTrace();
+            }
+        }
+        
         employee employeeInstance = new employee();
 
-        List<employee> searchResults = employeeInstance.searchEmployees(firstName, lastName, gender, birthday, age, position, salary);
+        List<employee> searchResults = employeeInstance.searchEmployees(firstName, lastName, gender, birthday, age, position, salary, vendorId);
 
         if (searchResults.isEmpty()) {
     %>
-                        <p>No results found.</p>
-                        <%
+            <p>No results found.</p>
+    <%
         } else {
     %>
-                            <table border="1">
-                                <tr>
-                                    <th>Employee ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Gender</th>
-                                    <th>Birthday</th>
-                                    <th>Age</th>
-                                    <th>Position</th>
-                                    <th>Salary</th>
-                                    <th>Mobile Number</th>
-                                    <th>Vendor ID</th>
-                                </tr>
+            <table border="2">
+                <tr>
+                    <th>Employee ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Birthday</th>
+                    <th>Age</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Mobile Number</th>
+                    <th>Vendor ID</th>
+                </tr>
 
-                                <% for (employee emp : searchResults) { %>
-                                    <tr>
-                                        <td>
-                                            <%= emp.employeeId %>
-                                        </td>
-                                        <td>
-                                            <%= emp.firstName %>
-                                        </td>
-                                        <td>
-                                            <%= emp.lastName %>
-                                        </td>
-                                        <td>
-                                            <%= emp.gender %>
-                                        </td>
-                                        <td>
-                                            <%= emp.birthday %>
-                                        </td>
-                                        <td>
-                                            <%= emp.age %>
-                                        </td>
-                                        <td>
-                                            <%= emp.position %>
-                                        </td>
-                                        <td>
-                                            <%= emp.salary %>
-                                        </td>
-                                        <td>
-                                            <%= emp.mobileNo %>
-                                        </td>
-                                        <td>
-                                            <%= emp.vendorId %>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                            </table>
-                            <%
+                <% for (employee emp : searchResults) { %>
+                    <tr>
+                        <td><%= emp.employeeId %></td>
+                        <td><%= emp.firstName %></td>
+                        <td><%= emp.lastName %></td>
+                        <td><%= emp.gender %></td>
+                        <td><%= emp.birthday %></td>
+                        <td><%= emp.age %></td>
+                        <td><%= emp.position %></td>
+                        <td><%= emp.salary %></td>
+                        <td><%= emp.mobileNo %></td>
+                        <td><%= emp.vendorId %></td>
+                    </tr>
+                <% } %>
+            </table>
+    <%
         }
     %>
 
-                                <p><a href="filterinfo.html">Back to Search</a></p>
-                                <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
-                </body>
-
-                </html>
+    <p><a href="filterinfo.html">Back to Search</a></p>
+    <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
+</body>
+</html>
