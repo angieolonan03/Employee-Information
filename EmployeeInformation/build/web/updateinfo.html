@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Employee Information</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <form action="updateemployee.jsp" method="post">
+        Employee ID: <input type="text" id="employee_id" name="employee_id" required><br><br> 
+        First Name: <input type="text" id="first_name" name="first_name" required><br><br> 
+        Last Name: <input type="text" id="last_name" name="last_name" required><br><br>
+        <label for="Gender">Gender: </label>
+        <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Non-Binary">Non-Binary</option>
+        </select><br><br> 
+        Position: <input type="text" id="position" name="position" required><br><br> 
+        Mobile Number: <input type="text" id="mobile_no" name="mobile_no" required><br><br> 
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+
