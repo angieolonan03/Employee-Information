@@ -1,20 +1,18 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-    <%@ page import="java.util.*, java.sql.*, data_management.*" %>
-        <%@ page import="java.text.SimpleDateFormat" %>
-            <%@ page import="java.util.Date" %>
+<%@ page import="java.util.*, java.sql.*, data_management.*" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 
-                <!DOCTYPE html>
-                <html>
-
-                <head>
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <title>Add Employee Information</title>
-                </head>
-
-                <body>
-                    <form action="addemployee.jsp" method="post">
-                        <jsp:useBean id="E" class="data_management.employee" scope="session" />
-                        <% 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Add Employee Information</title>
+</head>
+<body>
+    <form action="addemployee.jsp" method="post">
+        <jsp:useBean id="E" class="data_management.employee" scope="session"/>
+        <% 
             // Receive the values from addemployee.html
             String v_first_name = request.getParameter("first_name");
             String v_last_name = request.getParameter("last_name");
@@ -62,34 +60,30 @@
                         // Call the addEmployee method
                         boolean res = employeeObj.addEmployee(employeeObj.firstName, employeeObj.lastName, employeeObj.gender, employeeObj.birthday, employeeObj.age, employeeObj.position, Double.parseDouble(v_salary), employeeObj.mobileNo, employeeObj.vendorId);
         %>
-                            <h1>
-                                <%= res ? "Adding Employee Successful!" : "Adding Employee Failed." %>
-                            </h1>
-                            <%
+                        <h1><%= res ? "Adding Employee Successful!" : "Adding Employee Failed." %></h1>
+        <%
                     } else {
         %>
-                                <h1>Adding Employee Failed. Vendor with ID
-                                    <%= v_vendor_id %> does not exist.</h1>
-                                <%
+                        <h1>Adding Employee Failed. Vendor with ID <%= v_vendor_id %> does not exist.</h1>
+        <%
                     }
                 } catch (NumberFormatException e) {
         %>
-                                    <h1>Adding Employee Failed. Invalid number format for mobile number, vendor ID, or salary.</h1>
-                                    <%
+                    <h1>Adding Employee Failed. Invalid number format for mobile number, vendor ID, or salary.</h1>
+        <%
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-        %>
-                                        <h1>Adding Employee Failed. All fields are required.</h1>
-                                        <%
+        %> 
+                <h1>Adding Employee Failed. All fields are required.</h1>
+        <%
             }
-        %>
-                                            <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
-                    </form>
+        %>  
+        <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
+    </form>
 
-                    <%-- Add a method to check if vendor exists --%>
-                        <%!
+    <%!
        public boolean vendorExists(int vendorId) {
     try (
         // Connect to the database
@@ -114,6 +108,5 @@
 }
 
     %>
-                </body>
-
-                </html>
+</body>
+</html>
