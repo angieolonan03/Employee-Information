@@ -14,14 +14,14 @@
 <html>
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Update Employee Information</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Update Employee Information</title>
 </head>
 
 <body>
-<form action="updateemployee.jsp" method="post">
-<jsp:useBean id="E" class="data_management.employee" scope="session" />
-                                <%
+    <form action="update_employee.jsp" method="post">
+        <jsp:useBean id="E" class="data_management.employee" scope="session" />
+        <%
         String errorMessage = "";
         boolean res = false;
 
@@ -83,11 +83,11 @@
 
         %>
 
-    <h1>
-    <%= res ? "Updating Employee Successful!" : errorMessage %>
-    </h1>
-    <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
+        <h1>
+            <%= res ? "Updating Employee Successful!" : errorMessage %>
+        </h1>
+        <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
     </form>
-    </body>
+</body>
 
-    </html>
+</html>
