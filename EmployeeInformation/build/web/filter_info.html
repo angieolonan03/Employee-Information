@@ -12,13 +12,22 @@ and open the template in the editor.
 </head>
 <body>
     <h1>Search and Filter Employees</h1>
-    <form action="filteremployee.jsp" method="post">
+    <form action="filter_employee.jsp" method="post">
         First Name: <input type="text" name="firstName"><br><br>
         Last Name: <input type="text" name="lastName"><br><br>
+        Gender:
+        <select name="gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select><br><br>
+        Birthday: <input type="date" name="birthday"><br><br>
+        Age: <input type="number" name="age"><br><br>
         Position: <input type="text" name="position"><br><br>
+        Salary: <input type="number" step="0.01" name="salary"><br><br>
+        Vendor ID: <input type="number" name="vendorId"><br><br>
         <input type="submit" value="Search">
     </form>
 </body>
 </html>
-
-
