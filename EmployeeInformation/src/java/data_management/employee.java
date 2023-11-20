@@ -33,7 +33,7 @@ public class employee {
 
     public employee() {}
     
-    public boolean addEmployee(String firstName, String lastName, String gender, Date birthday, int age, String position, double salary, int mobileNo, int vendorId) {
+    public boolean addEmployee() {
         try (
             // Connect to the database
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false")
@@ -297,4 +297,22 @@ return false;
 
         return searchResults;
     }
+    
+    public static void main(String args[]){
+        /*employee e = new employee();
+        
+        e.firstName = "Kimi";
+        e.lastName = "Valdez";
+        e.gender= "Female";
+        e.age= 19;
+        e.position = "Manager";
+        e.birthday = new Date();
+        e.salary = 120000.00;;
+        e.mobileNo = 93912479;
+        e.vendorId= 9001;
+        
+        e.addEmployee();*/
+    }
+    
 }
+
