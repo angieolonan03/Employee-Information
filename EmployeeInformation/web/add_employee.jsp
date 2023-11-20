@@ -10,7 +10,7 @@
     <title>Add Employee Information</title>
 </head>
 <body>
-    <form action="addemployee.jsp" method="post">
+    <form action="add_employee.jsp" method="post">
         <jsp:useBean id="E" class="data_management.employee" scope="session"/>
         <% 
             // Receive the values from addemployee.html
