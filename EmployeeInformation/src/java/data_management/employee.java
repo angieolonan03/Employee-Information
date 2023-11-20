@@ -10,7 +10,6 @@ package data_management;
  *
  * @author ccslearner
  */
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class employee {
     public ArrayList<String> employeeIdList = new ArrayList<>();
 
     public employee() {}
-    
+
     public boolean addEmployee() {
         try (
             // Connect to the database
@@ -70,37 +69,40 @@ public class employee {
         return false;
     }
 
-    private int generateNewEmployeeId(Connection conn) throws SQLException {
-        int newEmployeeId = 0;
+private int generateNewEmployeeId(Connection conn) throws SQLException {
+    int newEmployeeId = 0;
 
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT COALESCE(MAX(employee_id), 0) + 1 AS ID FROM employee")) {
-            ResultSet rs = stmt.executeQuery();
+    try (PreparedStatement stmt = conn.prepareStatement("SELECT COALESCE(MAX(employee_id), 0) + 1 AS ID FROM employee")) {
+        ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                newEmployeeId = rs.getInt("ID");
-            }
-        }
-        return newEmployeeId;
-    }
-
-    private boolean vendorExists(int vendorId, Connection conn) throws SQLException {
-        try (PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM vendor WHERE vendor_id = ?")) {
-            checkStmt.setInt(1, vendorId);
-            ResultSet checkResult = checkStmt.executeQuery();
-            return checkResult.next();
+        if (rs.next()) {
+            newEmployeeId = rs.getInt("ID");
         }
     }
 
-    private boolean isEmployeeIdExists(int employeeId, Connection conn) throws SQLException {
-        try (PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM employee WHERE employee_id = ?")) {
-            checkStmt.setInt(1, employeeId);
-            ResultSet checkResult = checkStmt.executeQuery();
-            return checkResult.next();
-        }
-    }
+    return newEmployeeId;
+}
 
-    public boolean updateEmployee() {
-try {
+private boolean vendorExists(int vendorId, Connection conn) throws SQLException {
+    try (PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM vendor WHERE vendor_id = ?")) {
+        checkStmt.setInt(1, vendorId);
+        ResultSet checkResult = checkStmt.executeQuery();
+
+        return checkResult.next();
+    }
+}
+
+
+private boolean isEmployeeIdExists(int employeeId, Connection conn) throws SQLException {
+    try (PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM employee WHERE employee_id = ?")) {
+        checkStmt.setInt(1, employeeId);
+        ResultSet checkResult = checkStmt.executeQuery();
+        return checkResult.next();
+        }
+}
+
+public boolean updateEmployee() {
+    try {
     // Connect to the database
     Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false");
     System.out.println("Connection Successful!");
@@ -195,124 +197,118 @@ return false;
         }
     }
 
-    public List<employee> searchEmployees(String firstName, String lastName, String gender, Date birthday, Integer age, String position, Double salary) {
-        List<employee> searchResults = new ArrayList<>();
+public List<employee> searchEmployees(String firstName, String lastName, String gender, Date birthday, Integer age, String position, Double salary, Integer vendorId) {
+    List<employee> searchResults = new ArrayList<>();
+
+    try (
+        // Connect to the database
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false")
+    ) {
+        // Build the SQL query based on search parameters
+        StringBuilder query = new StringBuilder("SELECT * FROM employee WHERE 1=1");
+
+        if (firstName != null && !firstName.isEmpty()) {
+            query.append(" AND first_name LIKE ?");
+        }
+
+        if (lastName != null && !lastName.isEmpty()) {
+            query.append(" AND last_name LIKE ?");
+        }
+
+        if (gender != null && !gender.isEmpty()) {
+            query.append(" AND gender = ?");
+        }
+
+        if (birthday != null) {
+            query.append(" AND birthday = ?");
+        }
+
+        if (age != null) {
+            query.append(" AND age = ?");
+        }
+
+        if (position != null && !position.isEmpty()) {
+            query.append(" AND position LIKE ?");
+        }
+
+        if (salary != null) {
+            // If salary is not null, add the condition to filter by salary
+            query.append(" AND salary = ?");
+        } else {
+            // If salary is null, add a condition to exclude null values
+            query.append(" AND salary IS NOT NULL");
+        }
+
+        if (vendorId != null) {
+            // If vendorId is not null, add the condition to filter by vendor_id
+            query.append(" AND vendor_id = ?");
+        }
 
         try (
-            // Connect to the database
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false")
+            // Prepare and execute the SQL statement
+            PreparedStatement stmt = conn.prepareStatement(query.toString())
         ) {
-            // Build the SQL query based on search parameters
-            StringBuilder query = new StringBuilder("SELECT * FROM employee WHERE 1=1");
+            int parameterIndex = 1;
 
             if (firstName != null && !firstName.isEmpty()) {
-                query.append(" AND first_name LIKE ?");
+                stmt.setString(parameterIndex++, "%" + firstName + "%");
             }
 
             if (lastName != null && !lastName.isEmpty()) {
-                query.append(" AND last_name LIKE ?");
+                stmt.setString(parameterIndex++, "%" + lastName + "%");
             }
 
             if (gender != null && !gender.isEmpty()) {
-                query.append(" AND gender = ?");
+                stmt.setString(parameterIndex++, gender);
             }
 
             if (birthday != null) {
-                query.append(" AND birthday = ?");
+                stmt.setDate(parameterIndex++, new java.sql.Date(birthday.getTime()));
             }
 
             if (age != null) {
-                query.append(" AND age = ?");
+                stmt.setInt(parameterIndex++, age);
             }
 
             if (position != null && !position.isEmpty()) {
-                query.append(" AND position LIKE ?");
+                stmt.setString(parameterIndex++, "%" + position + "%");
             }
 
             if (salary != null) {
-                // If salary is not null, add the condition to filter by salary
-                query.append(" AND salary = ?");
-            } else {
-                // If salary is null, add a condition to exclude null values
-                query.append(" AND salary IS NOT NULL");
+                stmt.setDouble(parameterIndex++, salary);
             }
 
-            try (
-               // Prepare and execute the SQL statement
-                PreparedStatement stmt = conn.prepareStatement(query.toString())
-            ) {
-                int parameterIndex = 1;
+            if (vendorId != null) {
+                stmt.setInt(parameterIndex++, vendorId);
+            }
 
-                if (firstName != null && !firstName.isEmpty()) {
-                    stmt.setString(parameterIndex++, "%" + firstName + "%");
-                }
+            try (ResultSet rs = stmt.executeQuery()) {
+                // Process the query results and populate the searchResults list
+                while (rs.next()) {
+                    employee emp = new employee();
+                    emp.employeeId = rs.getInt("employee_id");
+                    emp.firstName = rs.getString("first_name");
+                    emp.lastName = rs.getString("last_name");
+                    emp.gender = rs.getString("gender");
+                    emp.birthday = rs.getDate("birthday");
+                    emp.age = rs.getInt("age");
+                    emp.position = rs.getString("position");
+                    emp.salary = rs.getDouble("salary");
+                    emp.mobileNo = rs.getInt("mobile_no");
+                    emp.vendorId = rs.getInt("vendor_id");
 
-                if (lastName != null && !lastName.isEmpty()) {
-                    stmt.setString(parameterIndex++, "%" + lastName + "%");
-                }
-
-                if (gender != null && !gender.isEmpty()) {
-                    stmt.setString(parameterIndex++, gender);
-                }
-
-                if (birthday != null) {
-                    stmt.setDate(parameterIndex++, new java.sql.Date(birthday.getTime()));
-                }
-
-                if (age != null) {
-                    stmt.setInt(parameterIndex++, age);
-                }
-
-                if (position != null && !position.isEmpty()) {
-                    stmt.setString(parameterIndex++, "%" + position + "%");
-                }
-
-                if (salary != null) {
-                    stmt.setDouble(parameterIndex++, salary);
-                }
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    // Process the query results and populate the searchResults list
-                    while (rs.next()) {
-                        employee emp = new employee();
-                        emp.employeeId = rs.getInt("employee_id");
-                        emp.firstName = rs.getString("first_name");
-                        emp.lastName = rs.getString("last_name");
-                        emp.gender = rs.getString("gender");
-                        emp.birthday = rs.getDate("birthday");
-                        emp.age = rs.getInt("age");
-                        emp.position = rs.getString("position");
-                        emp.salary = rs.getDouble("salary");
-                        emp.mobileNo = rs.getInt("mobile_no");
-                        emp.vendorId = rs.getInt("vendor_id");
-
-                        searchResults.add(emp);
-                    }
+                    searchResults.add(emp);
                 }
             }
-        } catch (SQLException e) {
-            // Handle SQLException
-            e.printStackTrace();
         }
+    } catch (SQLException e) {
+        // Handle SQLException
+        e.printStackTrace();
+    }
 
-        return searchResults;
-    }
-    
-    public static void main(String args[]){
-        /*employee e = new employee();
-        
-        e.firstName = "Kimi";
-        e.lastName = "Valdez";
-        e.gender= "Female";
-        e.age= 19;
-        e.position = "Manager";
-        e.birthday = new Date();
-        e.salary = 120000.00;;
-        e.mobileNo = 93912479;
-        e.vendorId= 9001;
-        
-        e.addEmployee();*/
-    }
-    
+    return searchResults;
+}
+
+
 }
 
