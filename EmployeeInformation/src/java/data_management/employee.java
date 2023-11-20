@@ -32,7 +32,7 @@ public class employee {
 
     public employee() {}
 
-    public boolean addEmployee(String firstName, String lastName, String gender, Date birthday, int age, String position, double salary, int mobileNo, int vendorId) {
+    public boolean addEmployee() {
         try (
             // Connect to the database
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false")
@@ -44,7 +44,7 @@ public class employee {
                 System.out.println("Vendor with ID " + vendorId + " does not exist. Employee Add Failed.");
                 return false;
             }
-            
+
             // Generate a new employee ID
             int newEmployeeId = generateNewEmployeeId(conn);
 
@@ -90,15 +90,6 @@ private boolean vendorExists(int vendorId, Connection conn) throws SQLException 
 
         return checkResult.next();
     }
-}
-
-
-private boolean isEmployeeIdExists(int employeeId, Connection conn) throws SQLException {
-    try (PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM employee WHERE employee_id = ?")) {
-        checkStmt.setInt(1, employeeId);
-        ResultSet checkResult = checkStmt.executeQuery();
-        return checkResult.next();
-        }
 }
 
 public boolean updateEmployee() {
@@ -311,6 +302,3 @@ public List<employee> searchEmployees(String firstName, String lastName, String 
 
 
 }
-
-
-
