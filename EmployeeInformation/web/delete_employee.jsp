@@ -14,7 +14,7 @@
     <title>Delete Employee Information</title>
 </head>
 <body>
-    <form action="deleteemployee.jsp" method="post">
+    <form action="delete_employee.jsp" method="post">
         <jsp:useBean id="E" class="data_management.employee" scope="session"/>
         <% 
             // Receive the values from the form
