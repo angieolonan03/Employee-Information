@@ -58,8 +58,8 @@
         }
         
         
-        String vendorIdString = request.getParameter("vendorId");
         Integer vendorId = null;
+        String vendorIdString = request.getParameter("vendorId");
 
         if (vendorIdString != null && !vendorIdString.isEmpty()) {
             try {
@@ -114,7 +114,8 @@
     %>
 
     <p><a href="filterinfo.html">Back to Search</a></p>
-    <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
+    <button type="button" onclick="window.location.href='employee_info.html'">Return to Employee Information Menu</button>
 </body>
 </html>
+
 
