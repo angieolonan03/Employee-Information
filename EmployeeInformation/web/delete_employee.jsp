@@ -4,67 +4,116 @@
     Author     : ccslearner
 --%>
 
-    <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-        <%@ page import="java.util.*, java.sql.*, data_management.*" %>
+<%@ page import="java.util.List, data_management.employee, java.util.Date" %>
+<%@ page import="java.io.*, java.sql.*, java.text.SimpleDateFormat" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search and Filter Employee Information</title>
+</head>
+<body>
+    <h1>Search and Filter Employee Information</h1>
 
-            <!DOCTYPE html>
-            <html>
+    <% 
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String gender = request.getParameter("gender");
+        String birthdayString = request.getParameter("birthday");
+        String ageString = request.getParameter("age");
+        Integer age = null;
 
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                <title>Delete Employee Information</title>
-            </head>
-
-            <body>
-                <form action="delete_employee.jsp" method="post">
-                    <jsp:useBean id="E" class="data_management.employee" scope="session" />
-                    <% 
-            // Receive the values from the form
-            String v_employee_id = request.getParameter("employee_id");
-            
-            // Check if employee ID is provided
-            if (v_employee_id != null && !v_employee_id.isEmpty()) {
-                try {
-                    // Set employee ID in the JavaBean
-                    E.employeeId = Integer.parseInt(v_employee_id);
-
-                    // Create a connection
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false");
-
-                    // Check if the employee exists
-                    if (E.employeeExists(conn)) {
-                        // Call the deleteEmployee method
-                        boolean res = E.deleteEmployee();
-
-                        // Close the connection
-                        conn.close();
-        %>
-                        <h1>
-                            <%= res ? "Deleting Employee Successful!" : "Deleting Employee Failed." %>
-                        </h1>
-                        <%
-                    } else {
-        %>
-                            <h1>Deleting Employee Failed. Employee ID does not exist.</h1>
-                            <%
-                    }
-                } catch (NumberFormatException e) {
-        %>
-                                <h1>Deleting Employee Failed. Invalid number format for employee ID.</h1>
-                                <%
-                } catch (SQLException e) {
-        %>
-                                    <h1>Deleting Employee Failed. SQL Exception.</h1>
-                                    <%
-                }
-            } else {
-        %>
-                                        <h1>Deleting Employee Failed. Employee ID is required.</h1>
-                                        <%
+        if (ageString != null && !ageString.isEmpty()) {
+            try {
+                age = Integer.parseInt(ageString);
+            } catch (NumberFormatException e) {
+                // Handle the case where ageString is not a valid integer
+                e.printStackTrace();
             }
-        %>
-                                            <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
-                </form>
-            </body>
+        }
 
-            </html>
+        String position = request.getParameter("position");
+        String salaryString = request.getParameter("salary");
+        Double salary = null;
+
+        if (salaryString != null && !salaryString.isEmpty()) {
+            try {
+                salary = Double.parseDouble(salaryString);
+            } catch (NumberFormatException e) {
+                // Handle the case where salaryString is not a valid double
+                e.printStackTrace();
+            }
+        }
+
+        // You need to parse the Date from the String
+        Date birthday = null;
+        if (birthdayString != null && !birthdayString.isEmpty()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                birthday = dateFormat.parse(birthdayString);
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        
+        String vendorIdString = request.getParameter("vendorId");
+        Integer vendorId = null;
+
+        if (vendorIdString != null && !vendorIdString.isEmpty()) {
+            try {
+                vendorId = Integer.parseInt(vendorIdString);
+            } catch (NumberFormatException e) {
+                // Handle the case where vendorIdString is not a valid integer
+                e.printStackTrace();
+            }
+        }
+        
+        employee employeeInstance = new employee();
+
+        List<employee> searchResults = employeeInstance.searchEmployees(firstName, lastName, gender, birthday, age, position, salary, vendorId);
+
+        if (searchResults.isEmpty()) {
+    %>
+            <p>No results found.</p>
+    <%
+        } else {
+    %>
+            <table border="2">
+                <tr>
+                    <th>Employee ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Birthday</th>
+                    <th>Age</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Mobile Number</th>
+                    <th>Vendor ID</th>
+                </tr>
+
+                <% for (employee emp : searchResults) { %>
+                    <tr>
+                        <td><%= emp.employeeId %></td>
+                        <td><%= emp.firstName %></td>
+                        <td><%= emp.lastName %></td>
+                        <td><%= emp.gender %></td>
+                        <td><%= emp.birthday %></td>
+                        <td><%= emp.age %></td>
+                        <td><%= emp.position %></td>
+                        <td><%= emp.salary %></td>
+                        <td><%= emp.mobileNo %></td>
+                        <td><%= emp.vendorId %></td>
+                    </tr>
+                <% } %>
+            </table>
+    <%
+        }
+    %>
+
+    <p><a href="filterinfo.html">Back to Search</a></p>
+    <button type="button" onclick="window.location.href='employeeinfo.html'">Return to Employee Information Menu</button>
+</body>
+</html>
