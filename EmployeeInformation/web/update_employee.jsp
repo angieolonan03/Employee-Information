@@ -19,7 +19,7 @@
 </head>
 
 <body>
-    <form action="updateemployee.jsp" method="post">
+    <form action="update_employee.jsp" method="post">
         <jsp:useBean id="E" class="data_management.employee" scope="session" />
         <%
         String errorMessage = "";
