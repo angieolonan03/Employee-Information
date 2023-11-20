@@ -5,7 +5,7 @@
 --%>
 
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, java.sql.*, employeemg.*" %>
+<%@ page import="java.util.*, java.sql.*, data_management.*" %>
 
 <!DOCTYPE html>
 <html>
@@ -14,8 +14,8 @@
     <title>Delete Employee Information</title>
 </head>
 <body>
-    <form action="deleteemployee.jsp" method="post">
-        <jsp:useBean id="A" class="employeemg.employee" scope="session"/>
+    <form action="delete_employee.jsp" method="post">
+        <jsp:useBean id="E" class="data_management.employee" scope="session"/>
         <% 
             // Receive the values from the form
             String v_employee_id = request.getParameter("employee_id");
@@ -23,16 +23,19 @@
             // Check if employee ID is provided
             if (v_employee_id != null && !v_employee_id.isEmpty()) {
                 try {
+                    // Instantiate an object of the employee class
+                    data_management.employee employeeObj = new data_management.employee();
+
                     // Set employee ID in the JavaBean
-                    A.employeeId = Integer.parseInt(v_employee_id);
+                    employeeObj.employeeId = Integer.parseInt(v_employee_id);
 
                     // Create a connection
                     Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_app?user=root&password=12345678&useTimezone=true&serverTimezone=UTC&useSSL=false");
 
                     // Check if the employee exists
-                    if (A.employeeExists(conn)) {
+                    if (employeeObj.employeeExists(conn)) {
                         // Call the deleteEmployee method
-                        boolean res = A.deleteEmployee();
+                        boolean res = employeeObj.deleteEmployee();
 
                         // Close the connection
                         conn.close();
@@ -63,5 +66,3 @@
     </form>
 </body>
 </html>
-
-
